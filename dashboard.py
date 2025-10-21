@@ -5,16 +5,61 @@ import matplotlib.pyplot as plt
 # --- KONFIGURASI DASHBOARD ---
 st.set_page_config(page_title="Dashboard Kuisioner", layout="wide")
 
-# --- HILANGKAN LOGO STREAMLIT & MENU DEFAULT ---
-hide_streamlit_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+# --- TEMA & WARNA KUSTOM (langsung di sini) ---
+st.markdown("""
+<style>
+/* ========== WARNA GLOBAL ========== */
+body {
+    background-color: #000000;
+    color: #ffffff;
+}
 
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #ff0099;
+}
+
+[data-testid="stSidebar"] * {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* Title dan header */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+}
+
+/* Tombol, highlight, dan teks utama */
+div.stButton > button {
+    background-color: #7d004c;
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+}
+div.stButton > button:hover {
+    background-color: #ea0093;
+    color: white;
+}
+
+/* Success message */
+.stAlert {
+    background-color: #7d004c;
+    color: white;
+    border-radius: 10px;
+}
+
+/* Tabel */
+.dataframe {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* Remove Streamlit branding */
+#MainMenu, header, footer {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
+
+# --- JUDUL UTAMA ---
 st.title("🎮 Dashboard Analisis Gaming dan Hobi Digital Mahasiswa: Antara Hiburan, Produktivitas, dan Gaya Hidup")
 
 # --- LOAD DATA ---
@@ -139,16 +184,14 @@ elif menu == "📊 Visualisasi":
 
         elif chart_type == "Pie Chart":
             fig, ax = plt.subplots()
-            df[col].value_counts().plot(kind='pie', autopct='%1.1f%%', startangle=90, ax=ax, colors=["#EA0093", "#7D004C", "#FF66CC", "#FF99FF"])
+            df[col].value_counts().plot(
+                kind='pie',
+                autopct='%1.1f%%',
+                startangle=90,
+                ax=ax,
+                colors=["#EA0093", "#7D004C", "#FF66CC", "#FF99FF"]
+            )
             ax.set_ylabel("")
             ax.set_title(f"Proporsi {col}")
             st.pyplot(fig)
 
-        elif chart_type == "Scatter Plot":
-            if len(numeric_cols) >= 2:
-                fig, ax = plt.subplots()
-                ax.scatter(df[x], df[y], color='#EA0093')
-                ax.set_xlabel(x)
-                ax.set_ylabel(y)
-                ax.set_title(f"Scatter Plot: {x} vs {y}")
-                st.pyplot(fig)
