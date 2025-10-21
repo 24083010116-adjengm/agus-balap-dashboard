@@ -2,67 +2,75 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# --- KONFIGURASI DASHBOARD ---
+# ==========================
+# 1. KONFIGURASI DASAR
+# ==========================
 st.set_page_config(page_title="Dashboard Kuisioner", layout="wide")
 
-# --- TEMA & WARNA KUSTOM (langsung di sini) ---
+# ==========================
+# 2. TEMA & WARNA SESUAI CONFIG.TOML (langsung di sini)
+# ==========================
 st.markdown("""
 <style>
-/* ========== WARNA GLOBAL ========== */
-body {
-    background-color: #000000;
-    color: #ffffff;
+/* ====== WARNA UTAMA ====== */
+body, [data-testid="stAppViewContainer"] {
+    background-color: #000000 !important;
+    color: #ffffff !important;
 }
 
-/* Sidebar */
+/* ====== SIDEBAR ====== */
 [data-testid="stSidebar"] {
-    background-color: #ff0099;
+    background-color: #ea0093 !important;
 }
-
 [data-testid="stSidebar"] * {
     color: #ffffff !important;
     font-weight: bold;
 }
 
-/* Title dan header */
-h1, h2, h3, h4, h5, h6 {
+/* ====== TEKS & JUDUL ====== */
+h1, h2, h3, h4, h5, h6, .stMarkdown, .stText, label, p {
     color: #ffffff !important;
 }
 
-/* Tombol, highlight, dan teks utama */
+/* ====== TOMBOL ====== */
 div.stButton > button {
-    background-color: #7d004c;
-    color: white;
+    background-color: #7d004c !important;
+    color: white !important;
     border-radius: 10px;
     font-weight: bold;
+    border: none;
 }
 div.stButton > button:hover {
-    background-color: #ea0093;
-    color: white;
+    background-color: #ea0093 !important;
+    color: white !important;
 }
 
-/* Success message */
+/* ====== ALERT (SUCCESS, WARNING, DLL) ====== */
 .stAlert {
-    background-color: #7d004c;
-    color: white;
+    background-color: #7d004c !important;
+    color: white !important;
     border-radius: 10px;
 }
 
-/* Tabel */
-.dataframe {
-    background-color: #000000;
-    color: #ffffff;
+/* ====== TABEL ====== */
+.dataframe, .stDataFrame, .stTable {
+    background-color: #000000 !important;
+    color: #ffffff !important;
 }
 
-/* Remove Streamlit branding */
+/* ====== HAPUS LOGO STREAMLIT ====== */
 #MainMenu, header, footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# --- JUDUL UTAMA ---
+# ==========================
+# 3. JUDUL UTAMA
+# ==========================
 st.title("🎮 Dashboard Analisis Gaming dan Hobi Digital Mahasiswa: Antara Hiburan, Produktivitas, dan Gaya Hidup")
 
-# --- LOAD DATA ---
+# ==========================
+# 4. LOAD DATA
+# ==========================
 @st.cache_data
 def load_data():
     df = pd.read_csv("kuisioner_final.csv", low_memory=False)
@@ -70,14 +78,18 @@ def load_data():
 
 df = load_data()
 
-# --- SIDEBAR MENU ---
+# ==========================
+# 5. SIDEBAR MENU
+# ==========================
 st.sidebar.title("📂 Menu Navigasi")
 menu = st.sidebar.radio(
     "Pilih Halaman:",
     ["🏠 Home", "📄 Data", "📈 Statistik", "📊 Visualisasi"]
 )
 
-# --- HALAMAN HOME ---
+# ==========================
+# 6. HALAMAN HOME
+# ==========================
 if menu == "🏠 Home":
     st.header("by AGUS BALAP - SAINS DATA - UPN VETERAN JAWA TIMUR 🧠")
     st.write("""
@@ -117,7 +129,9 @@ if menu == "🏠 Home":
 
     st.success("Silakan pilih menu di sidebar untuk memulai!")
 
-# --- HALAMAN DATA ---
+# ==========================
+# 7. HALAMAN DATA
+# ==========================
 elif menu == "📄 Data":
     st.header("📄 Data Kuisioner")
     st.write("Berikut adalah data yang telah dibersihkan:")
@@ -130,7 +144,9 @@ elif menu == "📄 Data":
         mime="text/csv"
     )
 
-# --- HALAMAN STATISTIK ---
+# ==========================
+# 8. HALAMAN STATISTIK
+# ==========================
 elif menu == "📈 Statistik":
     st.header("📈 Statistik Deskriptif")
     st.write(df.describe())
@@ -142,7 +158,9 @@ elif menu == "📈 Statistik":
     with col2:
         st.write("Jumlah Kolom:", df.shape[1])
 
-# --- HALAMAN VISUALISASI ---
+# ==========================
+# 9. HALAMAN VISUALISASI
+# ==========================
 elif menu == "📊 Visualisasi":
     st.header("📊 Visualisasi Data")
 
@@ -154,7 +172,7 @@ elif menu == "📊 Visualisasi":
     categorical_cols = [col for col in categorical_cols if col not in excluded_cols]
     numeric_cols = [col for col in numeric_cols if col not in excluded_cols]
 
-    # Bagi menjadi dua kolom
+    # Dua kolom layout
     left_col, right_col = st.columns([1, 2])
 
     with left_col:
@@ -174,12 +192,15 @@ elif menu == "📊 Visualisasi":
 
     with right_col:
         st.subheader("📈 Hasil Visualisasi")
+
         if chart_type == "Bar Chart":
             fig, ax = plt.subplots()
             df[col].value_counts().plot(kind='bar', color='#EA0093', ax=ax)
-            ax.set_title(f"Distribusi {col}")
-            ax.set_xlabel(col)
-            ax.set_ylabel("Frekuensi")
+            ax.set_title(f"Distribusi {col}", color='#ffffff')
+            ax.set_xlabel(col, color='#ffffff')
+            ax.set_ylabel("Frekuensi", color='#ffffff')
+            ax.tick_params(colors='white')
+            fig.patch.set_facecolor('#000000')
             st.pyplot(fig)
 
         elif chart_type == "Pie Chart":
@@ -192,6 +213,17 @@ elif menu == "📊 Visualisasi":
                 colors=["#EA0093", "#7D004C", "#FF66CC", "#FF99FF"]
             )
             ax.set_ylabel("")
-            ax.set_title(f"Proporsi {col}")
+            ax.set_title(f"Proporsi {col}", color='#ffffff')
+            fig.patch.set_facecolor('#000000')
             st.pyplot(fig)
 
+        elif chart_type == "Scatter Plot":
+            if len(numeric_cols) >= 2:
+                fig, ax = plt.subplots()
+                ax.scatter(df[x], df[y], color='#EA0093')
+                ax.set_xlabel(x, color='#ffffff')
+                ax.set_ylabel(y, color='#ffffff')
+                ax.set_title(f"Scatter Plot: {x} vs {y}", color='#ffffff')
+                ax.tick_params(colors='white')
+                fig.patch.set_facecolor('#000000')
+                st.pyplot(fig)
